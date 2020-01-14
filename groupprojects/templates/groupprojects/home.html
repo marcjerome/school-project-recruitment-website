@@ -1,0 +1,162 @@
+{% load socialaccount %}
+{% load account %}
+{% providers_media_js %}
+
+{% include 'groupprojects/base.html' %}
+
+{% block content %}
+<script>
+
+
+  //To do, add ajax in submit proposal button and if the user already accessed the page
+  //allow him to access it without asking for access code
+
+  document.addEventListener('DOMContentLoaded', () => {
+    let projectLink = "";
+    let accessCode = "";
+
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+    var submitButton = document.getElementById("submit");
+   
+    function sendAccessCode(projectLink, accessCode){
+        let data = {
+          "project-slug": projectLink,
+          "access-code": accessCode
+        }
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", `{% url 'access' %}`, true);
+        xhttp.onload = () => {
+          let url = window.location
+          const data = JSON.parse(xhttp.responseText);
+
+          if(data["status_code"] === 0){
+            document.querySelector('#response-text').innerHTML = data["text"];
+          }
+
+          else if (data["status_code"] === 1) {
+            history.pushState(null, null, "{%url 'home'%}");
+            window.location.replace("{% url 'proposal' 123 %}".replace('123', projectLink));
+
+          }
+
+          else if(data["status_code"] == 2){
+            modal.style.display = "block";
+          }
+
+         
+          
+
+        }
+        xhttp.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
+        xhttp.send(JSON.stringify(data));
+    }
+
+  
+    document.querySelectorAll('.proposal-button').forEach(button => {
+      button.onclick = () => {
+        projectLink = button.dataset.slug;
+        sendAccessCode(projectLink, undefined);
+      }
+    });
+
+    span.onclick = function() {
+      modal.style.display = "none";
+      document.getElementById("text-field").value="";
+      document.getElementById("response-text").innerHTML="";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+        document.getElementById("text-field").value="";
+        document.getElementById("response-text").innerHTML="";
+      }
+    } 
+
+    submitButton.onclick = function(){
+      var accessCodeTextField = document.getElementById("text-field");
+      accessCode = accessCodeTextField.value;
+      sendAccessCode(projectLink, accessCode);
+    }
+  });
+
+
+
+</script>
+
+<style>
+ /* The Modal (background) */
+ .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} 
+</style>
+
+
+    {% if user.is_authenticated%}
+        <h1 id="heading">Hello, {% user_display user %} </h1>
+        <p><a href="{% url 'account_logout' %}">Log out</a></p>
+    {%else%}
+    <h1 >Welcome to site!</h1>
+      <p><a href="{% provider_login_url 'facebook' method='js_sdk'%}">Log in with Facebook</a></p>
+    {%endif%}
+
+    <hr>
+    {%for project in projects%}
+    
+      <h3>{{project.name}}</h3>
+      <h4>{{project.subject}}</h4>
+      <h4>{{project.date}}</h4>
+      <h4>Completed: {{project.is_completed}}</h4>
+      {%if not project.is_completed%}
+      <button class="proposal-button" data-slug="{{project.slug}}">Submit a Proposal</button>
+      {%endif%}
+      <hr>
+
+      
+    {%endfor%}
+
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times</span>
+        <h4>Enter Access Code</h4>
+          <input type="text" id="text-field"> 
+          <button type="submit" id="submit">Submit</button>
+        <p id="response-text"></p>
+      </div>
+    </div>
+{% endblock %}
