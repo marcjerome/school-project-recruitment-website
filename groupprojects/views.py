@@ -52,31 +52,44 @@ def access(request):
         return HttpResponse(json_dump(response_data))
     return redirect('home')
 
-#To do: render a proper view when a user properly submits proposal or a user 
-#already submitted a proposal
+
 def proposal(request, the_slug):
-    message = ""
+    proposal_text = None
 
-    if request.POST.get("submit"):
-        form = MembershipForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-
-    elif the_slug in request.session:
+    if the_slug in request.session:
 
         project = get_object_or_404(Project, slug=the_slug)
+        membership = Membership()
+        member = membership.get_member(user=request.user, project=project) 
 
         if project.is_completed:
             return redirect('home')
 
-        form = MembershipForm(initial={'user': request.user, 'project': project})
+        elif member is not None:
+            proposal_text = member.proposal_text
+            form = MembershipForm(request.POST or None, instance=member)
+            
+            if request.POST.get('delete'):
+                member.delete()
+                form = MembershipForm(initial={'user': request.user, 'project': project})
+                proposal_text = None 
+
+            elif form.is_valid():
+                form.save()
+                proposal_text = form.cleaned_data['proposal_text']
+                
+        else:
+            form = MembershipForm(request.POST or None, initial={'user': request.user, 'project': project})
+            if form.is_valid():
+                form.save()
+                proposal_text = form.cleaned_data['proposal_text']
 
         context = {
             'name': project.name,
             'date': project.date, 
             'slug': the_slug,
             'form': form,
+            'proposal_text': proposal_text,
         }
 
         return render(request, 'groupprojects/proposal.html', context)

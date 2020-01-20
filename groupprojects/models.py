@@ -18,6 +18,7 @@ class Project(models.Model):
     name = models.CharField(max_length=200, null=False, blank=False, help_text= "Name of the project")
     slug = models.SlugField(max_length=280, null=False, blank=True, unique=True)
     date = models.DateField(null=False, blank=False, help_text="Date when the project was started")
+    details = models.TextField(null=False, blank=True, help_text="What the Project is all about or the details about the characteristics of the student you're going to recruit, etc.")
     access_code = models.CharField(max_length=6, blank=True, help_text="Code for accessing the project. This prevents spamming")
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=False, help_text="The subject of the project ")
     is_completed = models.BooleanField(default=False, null=False, blank=False)
@@ -53,3 +54,22 @@ class Membership(models.Model):
 
     def __str__(self):
         return '[' + self.user.username + '] ' + ' [' + self.project.name + ']'
+
+    def get_member(self, user, project):
+        try:
+            member = Membership.objects.get(user=user, project=project)
+        except self.DoesNotExist:
+            member = None
+
+        return member
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    message = models.TextField(null=False, blank=False, help_text="The text that will be displayed when a user is notified")
+    date = models.DateField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'project']
+
+#To do add: add signals

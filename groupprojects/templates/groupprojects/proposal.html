@@ -2,10 +2,16 @@
 
 {%block content%}
     <h1>{{name}}</h1>
-
+    {% if proposal_text %}
+        <p>{{proposal_text}}</p>
+        <p>You can update or remove your proposal below</p>
+    {%endif%}
     <form method="POST" action="{% url 'proposal' slug %}">
         {% csrf_token %}
         {{form}}
-        <input type="Submit" name="submit">
+        <input type="submit" name="submit" value="submit">
+        {% if proposal_text %}
+        <input type="submit" name="delete" value="delete">
+        {%endif%}
     </form>
 {%endblock%}
