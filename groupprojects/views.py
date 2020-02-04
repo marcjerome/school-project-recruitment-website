@@ -11,6 +11,15 @@ def home(request):
 
     return render(request, 'groupprojects/home.html', {'projects': projects})
 
+def notification(request):
+        notifications = request.user.notifications.all()
+
+        data = {
+            "notification_count": str(notifications.count()),  
+        }
+
+        return HttpResponse(json_dump(data))
+
 def access(request):
 
     '''
@@ -80,13 +89,14 @@ def proposal(request, the_slug):
                 
         else:
             form = MembershipForm(request.POST or None, initial={'user': request.user, 'project': project})
+            print('waka')
             if form.is_valid():
+                print('save')
                 form.save()
                 proposal_text = form.cleaned_data['proposal_text']
 
         context = {
-            'name': project.name,
-            'date': project.date, 
+            'project': project,
             'slug': the_slug,
             'form': form,
             'proposal_text': proposal_text,

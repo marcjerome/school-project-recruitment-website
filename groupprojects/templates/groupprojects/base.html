@@ -1,13 +1,193 @@
+{% load static %}
+{% load account %}
+{% load socialaccount %}
+
+
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="zxx">
     <head>
-        <title>
-            Test
-        </title>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>KaGrupo</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+        <!-- <link rel="manifest" href="site.webmanifest"> -->
+        <link rel="shortcut icon" type="image/x-icon" href="{static 'groupprojects/img/favicon.png' }">
+        <!-- Place favicon.ico in the root directory -->
+    
+        <!-- CSS here -->
+        <link rel="stylesheet" href="{% static 'groupprojects/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/owl.carousel.min.css' %}">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/magnific-popup.css' %} ">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/font-awesome.min.css' %} ">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/themify-icons.css' %} ">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/nice-select.css' %} ">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/flaticon.css' %} ">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/gijgo.css' %} ">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/animate.min.css' %} ">
+        <link rel="stylesheet" href="{% static 'groupprojects/css/slicknav.css' %} ">
+    
+        <link rel="stylesheet" href="{% static 'groupprojects/css/style.css' %} ">
+        <!-- <link rel="stylesheet" href="css/responsive.css"> -->
+
+                <!-- link that opens popup -->
+        <!-- JS here -->
+        <script src="{% static 'groupprojects/js/vendor/modernizr-3.5.0.min.js'%} "></script>
+        <script src="{% static 'groupprojects/js/vendor/jquery-1.12.4.min.js' %}"></script>
+        <script src="{% static 'groupprojects/js/popper.min.js' %}"></script>
+        <script src="{% static 'groupprojects/js/bootstrap.min.js'%}"></script>
+        <script src="{% static 'groupprojects/js/owl.carousel.min.js'%}"></script>
+        <script src="{% static 'groupprojects/js/isotope.pkgd.min.js'%}"></script>
+        <script src="{% static 'groupprojects/js/ajax-form.js' %}"></script>
+        <script src="{% static 'groupprojects/js/waypoints.min.js'%}"></script>
+        <script src="{% static 'groupprojects/js/jquery.counterup.min.js' %}"></script>
+        <script src="{% static 'groupprojects/js/imagesloaded.pkgd.min.js' %}"></script>
+        <script src="{% static 'groupprojects/js/scrollIt.js' %}"></script>
+        <script src="{% static 'groupprojects/js/jquery.scrollUp.min.js' %}"></script>
+        <script src="{% static 'groupprojects/js/wow.min.js' %}"></script>
+        <script src="{% static 'groupprojects/js/nice-select.min.js' %}"></script>
+        <script src="{% static 'groupprojects/js/jquery.slicknav.min.js' %}"></script>
+        <script src="{% static 'groupprojects/js/jquery.magnific-popup.min.js'%} "></script>
+        <script src="{% static 'groupprojects/js/plugins.js'%} "></script>
+        <script src="{% static 'groupprojects/js/gijgo.min.js' %} "></script>
+
+
+
+        <!--contact js-->
+        <script src="{% static 'groupprojects/js/contact.js' %} "></script>
+        <script src="{% static 'groupprojects/js/jquery.ajaxchimp.min.js' %} "></script>
+        <script src="{% static 'groupprojects/js/jquery.form.js' %} "></script>
+        <script src="{% static 'groupprojects/js/jquery.validate.min.js' %} "></script>
+        <script src="{% static 'groupprojects/js/mail-script.js' %} "></script>
+
+
+        <script src="{%static 'groupprojects/js/main.js'%} "></script>
     </head>
 
+    
     <body>
-        {% block content %}
-        {% endblock %}
-    </body>
+
+        <script>
+
+            function loadDoc(){
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", `{% url 'notification' %}`, true);
+                
+                xhttp.onload = () => {
+                    const data = JSON.parse(xhttp.responseText);
+                    console.log('test')
+                    document.getElementById("notif").innerHTML = data["notification_count"];
+                  
+                }
+                
+                xhttp.setRequestHeader("X-CSRFToken", '{{csrf_token}}');
+                xhttp.send();
+
+            }
+            document.addEventListener('DOMContentLoaded', () => {
+                loadDoc();
+            });
+            setInterval(function () {loadDoc(); }, 30000);
+        </script>
+
+
+<header>
+    <div class="header-area ">
+        <div id="sticky-header" class="main-header-area">
+            <div class="container-fluid ">
+                <div class="header_bottom_border">
+                    <div class="row align-items-center">
+                        <div class="col-xl-3 col-lg-2">
+                            <div class="logo">
+                                <a href="{% url 'home' %}">
+                                    <img src="{%static 'groupprojects/img/logo.png'%}" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-7">
+                            <div class="main-menu  d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><a href="{% url 'home' %}">home</a></li>
+                                        <li><a href="jobs.html">Browse projects</a></li>
+                                        <li><a href="#">pages <i class="ti-angle-down"></i></a>
+                                            <ul class="submenu">
+                                                <li><a href="candidate.html">Candidates </a></li>
+                                                <li><a href="job_details.html">job details </a></li>
+                                                <li><a href="elements.html">elements</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="#">blog <i class="ti-angle-down"></i></a>
+                                            <ul class="submenu">
+                                                <li><a href="blog.html">blog</a></li>
+                                                <li><a href="single-blog.html">single-blog</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="contact.html">Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 d-none d-lg-block">
+                            <div class="Appointment">
+                                {% if user.is_authenticated %}
+                                <div class="text-white d-none d-xl-block mr-4">
+                                    <a class=" fa fa-bell ">
+       
+                                        <span class="num text-white bg-danger p-1 font-weight-bold" id="notif"></span>
+                                    </a>
+                                </div>
+                                <div class="phone_num d-none d-xl-block">
+                                    <a href="{% url 'account_logout' %}">Log out</a>
+                                </div>
+                                {% else %}
+                                <div class="phone_num d-none d-xl-block">
+                                    <a href="{% provider_login_url 'facebook' method='js_sdk' %}">Log in</a>
+                                </div>
+                                {% endif %}
+                                <div class="d-none d-lg-block">
+                                    <a class="boxed-btn3" href="#">Post a Job</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mobile_menu d-block d-lg-none"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</header>
+<!-- header-end -->
+
+
+
+<!--{% if user.is_authenticated%}
+            
+      <p  class="my-2 my-lg-0 mx-1"><a href="{% url 'account_logout' %}" class="text-white">Log out</a></p>
+      {% else %}
+      <p class="my-2 my-lg-0 mx-1"><a href="{% provider_login_url 'facebook' method='js_sdk'%}" class="text-white">Log in with Facebook</a></p>
+    
+      {% endif  %}
+
+      {% if user.is_authenticated%}
+      
+      <p class="my-2 my-lg-0 mx-1 text-white">Notif:<span id="notif"></span></p>
+
+      {% endif  %}
+  -->
+      
+
+
+        <div>
+
+            {% block content %}
+            {% endblock %}
+    
+        </div>
+        
+        </body>
 </html>
