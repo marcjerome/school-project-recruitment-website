@@ -3,12 +3,15 @@ A website that allows university students to properly recruit their members in a
 
 # Screenshots
 
+**Home**
 ![Homepage](/readme/images/home.png)
 
 
+**Project Listings**
 ![Project Listings](/readme/images/project-listings.png)
 
 
+**Project information**
 ![Project Information](/readme/images/project-information.png)
 
    
