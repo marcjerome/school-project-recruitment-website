@@ -1,4 +1,4 @@
-# school-group-project-recruitment-website
+# School Project Recruitment Website
 A website that allows university students to properly recruit their members in a school project through online proposal 
 
 # Screenshots
